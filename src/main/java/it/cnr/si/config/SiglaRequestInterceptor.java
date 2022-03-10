@@ -12,7 +12,6 @@ public class SiglaRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
-        // requestTemplate.header("X-sigla-esercizio", esercizio);
         requestTemplate.header("X-sigla-cd-cds", cds);
         requestTemplate.header("X-sigla-cd-unita-organizzativa", uo);
         requestTemplate.header("X-sigla-cd-cdr", cdr);
