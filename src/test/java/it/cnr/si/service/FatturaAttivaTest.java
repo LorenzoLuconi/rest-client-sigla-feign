@@ -16,9 +16,10 @@ import java.util.List;
 
 public class FatturaAttivaTest {
 
+    private final SiglaService siglaService = new SiglaService();
+
     @Test
     public void inserisciFatture() {
-        SiglaService siglaService = new SiglaService();
         FatturaAttivaDTO fatturaAttivaDTO = new FatturaAttivaDTO();
         fatturaAttivaDTO.setEsercizio(LocalDateTime.now().getYear());
         fatturaAttivaDTO.setCd_cds_origine(PropertiesService.getProp("sigla.cds"));
