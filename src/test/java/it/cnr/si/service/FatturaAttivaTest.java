@@ -16,9 +16,10 @@ import java.util.List;
 
 public class FatturaAttivaTest {
 
+    private final SiglaService siglaService = new SiglaService();
+
     @Test
     public void inserisciFatture() {
-        SiglaService siglaService = new SiglaService();
         FatturaAttivaDTO fatturaAttivaDTO = new FatturaAttivaDTO();
         fatturaAttivaDTO.setEsercizio(LocalDateTime.now().getYear());
         fatturaAttivaDTO.setCd_cds_origine(PropertiesService.getProp("sigla.cds"));
@@ -52,20 +53,20 @@ public class FatturaAttivaTest {
 
         final List<FatturaAttivaDTO> fatturaAttivaDTOList = siglaService.inserisciFatture(Arrays.asList(fatturaAttivaDTO));
         Assert.assertEquals(1, fatturaAttivaDTOList.size());
-        final Long pgFatturaAttiva = fatturaAttivaDTOList.stream().map(FatturaAttivaDTO::getPg_fattura_attiva).findAny().orElse(null);
-        final FatturaAttivaDTO fatturaByProgressivo = siglaService.getFatturaByProgressivo(pgFatturaAttiva);
+        final FatturaAttivaDTO fatturaCreata = fatturaAttivaDTOList.stream().findFirst().orElseThrow(() -> new RuntimeException("Fattura creata non trovato"));
+        final FatturaAttivaDTO fatturaByProgressivo = siglaService.getFatturaByProgressivo(fatturaCreata.getPg_fattura_attiva(), fatturaCreata.getEsercizio());
         Assert.assertEquals(Integer.valueOf(34791), fatturaByProgressivo.getCd_terzo());
-
     }
 
     @Test
     public void stampaFattura() throws IOException {
-        SiglaService siglaService = new SiglaService();
+
 
         final Long pgStampa = siglaService.inserisciDatiPerStampa(Long.valueOf(7));
         Assert.assertNotNull(pgStampa);
 
-        final byte[] bytes = siglaService.stampaFattura(pgStampa);
+        // FIXME: non sono sicuro di dove devo prendere il fiscalYear
+        final byte[] bytes = siglaService.stampaFattura(pgStampa, LocalDateTime.now().getYear());
         Assert.assertNotNull(bytes);
 
         try (FileOutputStream stream = new FileOutputStream("stampa.pdf")) {

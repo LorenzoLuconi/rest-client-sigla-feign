@@ -2,11 +2,12 @@ package it.cnr.si.service;
 
 import com.google.gson.*;
 import feign.Feign;
+import feign.auth.BasicAuthRequestInterceptor;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import it.cnr.si.config.AuthenticationOnlyErrorDecoder;
-import it.cnr.si.config.BasicRequestInterceptor;
 import it.cnr.si.config.Sigla;
+import it.cnr.si.config.SiglaRequestInterceptor;
 import it.cnr.si.dto.docamm.FatturaAttivaDTO;
 
 import java.lang.reflect.Type;
@@ -19,13 +20,14 @@ import java.util.List;
 public class SiglaService {
 
     private final String baseUrl = PropertiesService.getProp("sigla.url");
+    private final String username = PropertiesService.getProp("sigla.username");
+    private final String password = PropertiesService.getProp("sigla.password");
 
-    private final BasicRequestInterceptor basicRequestInterceptor;
-
-    private final AuthenticationOnlyErrorDecoder authenticationOnlyErrorDecoder;
+    private final String cds = PropertiesService.getProp("sigla.cds");
+    private final String uo = PropertiesService.getProp("sigla.uo");
+    private final String cdr = PropertiesService.getProp("sigla.cdr");
 
     private final Sigla sigla;
-
     private final Sigla siglaPrint;
 
     public SiglaService() {
@@ -41,26 +43,29 @@ public class SiglaService {
             }
         }).create();
 
-        basicRequestInterceptor = new BasicRequestInterceptor();
-        authenticationOnlyErrorDecoder = new AuthenticationOnlyErrorDecoder();
+        final SiglaRequestInterceptor siglaRequestInterceptor = new SiglaRequestInterceptor(cds, cdr, uo);
+        final BasicAuthRequestInterceptor basicAuthRequestInterceptor = new BasicAuthRequestInterceptor(username, password);
+        final AuthenticationOnlyErrorDecoder authenticationOnlyErrorDecoder = new AuthenticationOnlyErrorDecoder();
 
         sigla = Feign.builder()
                 .decoder(new GsonDecoder(gson))
                 .encoder(new GsonEncoder(gson))
-                .requestInterceptor(basicRequestInterceptor)
+                .requestInterceptor(basicAuthRequestInterceptor)
+                .requestInterceptor(siglaRequestInterceptor)
                 .errorDecoder(authenticationOnlyErrorDecoder)
                 .target(Sigla.class, baseUrl);
 
         siglaPrint = Feign.builder()
                 .encoder(new GsonEncoder(gson))
-                .requestInterceptor(basicRequestInterceptor)
+                .requestInterceptor(basicAuthRequestInterceptor)
+                .requestInterceptor(siglaRequestInterceptor)
                 .errorDecoder(authenticationOnlyErrorDecoder)
                 .target(Sigla.class, baseUrl);
 
     }
 
-    public FatturaAttivaDTO getFatturaByProgressivo(Long pg) {
-        return sigla.getFatturaByProgressivo(pg);
+    public FatturaAttivaDTO getFatturaByProgressivo(long pg, int esercizio) {
+        return sigla.getFatturaByProgressivo(pg, esercizio);
     }
 
     public List<FatturaAttivaDTO> inserisciFatture(List<FatturaAttivaDTO> fatture) {
@@ -71,8 +76,8 @@ public class SiglaService {
         return sigla.inserisciDatiPerStampa(pgFattura);
     }
 
-    public byte[] stampaFattura(Long pgStampa) {
-        return siglaPrint.stampaFattura(pgStampa);
+    public byte[] stampaFattura(long pgStampa, int esercizio) {
+        return siglaPrint.stampaFattura(pgStampa, esercizio);
     }
 
 }
