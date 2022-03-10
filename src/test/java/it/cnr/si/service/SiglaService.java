@@ -57,7 +57,8 @@ public class SiglaService {
 
         siglaPrint = Feign.builder()
                 .encoder(new GsonEncoder(gson))
-                .requestInterceptor(basicRequestInterceptor)
+                .requestInterceptor(basicAuthRequestInterceptor)
+                .requestInterceptor(siglaRequestInterceptor)
                 .errorDecoder(authenticationOnlyErrorDecoder)
                 .target(Sigla.class, baseUrl);
 

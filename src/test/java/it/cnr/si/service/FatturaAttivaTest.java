@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-public class FatturaAttivaTest {
+public class   FatturaAttivaTest {
 
     private final SiglaService siglaService = new SiglaService();
 
