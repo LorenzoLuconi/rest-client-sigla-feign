@@ -78,7 +78,7 @@ public class FatturaAttivaDTO {
 
     private java.math.BigDecimal Im_totale_iva;
 
-    //private Date dt_protocollo;
+    private LocalDateTime dt_protocollo;
     private java.lang.Long nr_protocollo_iva;
     private String ti_bene_servizio;
     private String fl_pagamento_anticipato;

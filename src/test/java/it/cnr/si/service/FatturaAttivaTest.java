@@ -60,6 +60,13 @@ public class   FatturaAttivaTest {
     }
 
     @Test
+    public void dataProtocollo() throws IOException {
+        SiglaService siglaService = new SiglaService();
+        final FatturaAttivaDTO fatturaByProgressivo = siglaService.getFatturaByProgressivo(2022, Long.valueOf(6));
+        Assert.assertNotNull(fatturaByProgressivo.getDt_protocollo());
+    }
+
+    @Test
     public void stampaFattura2022() throws IOException {
         SiglaService siglaService = new SiglaService();
 
