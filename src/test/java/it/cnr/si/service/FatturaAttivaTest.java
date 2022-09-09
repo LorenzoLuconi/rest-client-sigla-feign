@@ -27,14 +27,14 @@ public class   FatturaAttivaTest {
         fatturaAttivaDTO.setTi_causale_emissione("C");
         fatturaAttivaDTO.setTi_bene_servizio("B");
         fatturaAttivaDTO.setTi_fattura("F");
-        fatturaAttivaDTO.setDt_registrazione(LocalDateTime.now().plusHours(1));
-        fatturaAttivaDTO.setFl_intra_ue(Boolean.TRUE);
+        fatturaAttivaDTO.setDt_registrazione(LocalDateTime.now().minusMinutes(30));
         fatturaAttivaDTO.setFl_liquidazione_differita(Boolean.FALSE);
         fatturaAttivaDTO.setCd_terzo(34791);
         fatturaAttivaDTO.setCd_terzo_uo_cds(8271);
         fatturaAttivaDTO.setCd_modalita_pag_uo_cds("BO");
         fatturaAttivaDTO.setPg_banca_uo_cds(Long.valueOf(2));
         fatturaAttivaDTO.setCd_tipo_sezionale("v/com");
+        fatturaAttivaDTO.setTi_bene_servizio("S");
 
         FatturaAttivaRigaDTO fatturaAttivaRigaDTO = new FatturaAttivaRigaDTO();
         fatturaAttivaRigaDTO.setDs_riga_fattura("TEST REST");
